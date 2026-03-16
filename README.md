@@ -36,7 +36,7 @@ This harms wallet privacy by revealing clusters of addresses that likely belong 
 
 ## Table of Contents
 
-- [Overview](#dustcleaner)
+- [Overview](#overview)
 - [Features](#features)
 - [Example Demo Output](#example-demo-output-regtest)
 - [Architecture Diagram](#architecture-diagram)
@@ -84,12 +84,6 @@ This harms wallet privacy by revealing clusters of addresses that likely belong 
   - Compatible with Bitcoin Core PSBT commands:
     - `walletprocesspsbt`
     - `finalizepsbt`
-
-### Example CLI Output – PSBT Export
-
-DustCleaner constructing a cleanup PSBT from detected dust UTXOs:
-
-![DustCleaner PSBT export](docs/psbt-demo.png)
 
 - **Signing & broadcast**
   - PSBT signing via Bitcoin Core
@@ -200,6 +194,12 @@ DustCleaner scanning wallet UTXOs and detecting dust outputs:
 
 ![DustCleaner scan output](docs/scan-demo.png)
 
+### Example CLI Output – PSBT Export
+
+DustCleaner constructing a cleanup PSBT from detected dust UTXOs:
+
+![DustCleaner PSBT export](docs/psbt-demo.png)
+
 ---
 
 ## Architecture Diagram
@@ -288,6 +288,40 @@ This will:
 5. Simulate a dust attack  
 6. Detect dust and build cleanup transactions  
 7. Export PSBT, sign, broadcast, and verify dust removal  
+
+---
+
+## Full Example Workflow
+
+1. **Scan wallet for dust UTXOs**
+
+   ```bash
+   dustcleaner scan --network regtest --wallet dusttest
+   ```
+
+2. **Inspect flagged outputs and risk levels**
+
+   ```bash
+   dustcleaner explain
+   ```
+
+3. **Build a cleanup PSBT from detected dust**
+
+   ```bash
+   dustcleaner export-psbt --file cleanup.psbt
+   ```
+
+4. **Sign the PSBT with Bitcoin Core**
+
+   ```bash
+   bitcoin-cli walletprocesspsbt cleanup.psbt
+   ```
+
+5. **Broadcast the finalized transaction**
+
+   ```bash
+   bitcoin-cli sendrawtransaction <hex>
+   ```
 
 ---
 
@@ -408,7 +442,14 @@ DustCleaner will highlight clustering and linkage risks, but it does **not** enf
     - See which UTXOs are risky
     - Understand clustering and linkage implications
     - Decide whether to spend or ignore certain dust
+
 ---
+
+## Project Status
+
+DustCleaner is an experimental CLI tool for detecting and consolidating dust UTXOs in Bitcoin Core wallets.
+It is currently in early development and primarily tested on regtest.
+Use caution and review transactions carefully before running against mainnet wallets.
 
 ## CLI Overview
 
@@ -435,7 +476,7 @@ dustcleaner scan         # Scan wallet UTXOs and detect dust
 dustcleaner explain      # Explain why specific UTXOs were flagged as dust
 dustcleaner build-psbt   # Build unsigned tx spending detected dust UTXOs
 dustcleaner export-psbt  # Build cleanup transaction(s) and export PSBT(s)
-dustcleaner simulate-dust# Simulate a dust attack on regtest
+dustcleaner simulate-dust  # Simulate a dust attack on regtest
 ```
 
 Each command supports common flags such as:
