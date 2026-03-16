@@ -1,0 +1,44 @@
+# Build artifacts
+dustcleaner
+*.exe
+*.out
+*.test
+
+# PSBT / transaction artifacts
+cleanup.psbt
+cleanup_fast.psbt
+cleanup_privacy.psbt*
+*.psbt
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Local env / secrets
+.env
+.env.*
+
+# Bitcoin Core / wallet data (never commit)
+wallets/
+wallet/
+*.wallet
+*.wallet.*
+regtest/
+testnet3/
+signet/
+blocks/
+chainstate/
+indexes/
+debug.log
+peers.dat
+
+# RPC cookies (never commit)
+*.cookie
+
+# IDE / editor
+.vscode/
+.idea/
+*.iml
+.DS_Store
+
