@@ -4,6 +4,8 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Bitcoin](https://img.shields.io/badge/bitcoin-compatible-orange)
 
+## Overview
+
 DustCleaner is a Bitcoin Core–integrated CLI tool for detecting, analyzing, and safely cleaning **dust UTXOs** from your wallet.
 
 Dust UTXOs are very small outputs (often a few hundred sats) that are uneconomical to spend. Attackers sometimes send dust to many addresses to try to track wallet clusters when victims later consolidate those outputs. Left unmanaged, dust can:
