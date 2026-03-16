@@ -2,6 +2,7 @@ package psbtbuilder
 
 import (
 	"dustcleaner/utxo"
+	"strings"
 	"testing"
 )
 
@@ -22,7 +23,7 @@ func TestEstimateCleanupFee(t *testing.T) {
 			name:       "multiple inputs",
 			inputCount: 10,
 			feeRate:    2,
-			expected:   1422, // (10 + 68*10 + 31) * 2 = 721 * 2 = 1442
+			expected:   1442, // (10 + 68*10 + 31) * 2 = 721 * 2 = 1442
 		},
 		{
 			name:       "zero inputs",
@@ -44,8 +45,8 @@ func TestEstimateCleanupFee(t *testing.T) {
 
 func TestBuildDustCleanupPSBT_Basic(t *testing.T) {
 	utxos := []utxo.UTXO{
-		{TxID: "a" + "0"*63, Vout: 0, Amount: 0.00001000}, // 1000 sats
-		{TxID: "b" + "0"*63, Vout: 0, Amount: 0.00001000}, // 1000 sats
+		{TxID: "a" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000}, // 1000 sats
+		{TxID: "b" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000}, // 1000 sats
 	}
 
 	destAddr := "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
@@ -106,10 +107,10 @@ func TestGroupUTXOsByAddress(t *testing.T) {
 
 func TestAnalyzePrivacyImpact(t *testing.T) {
 	tests := []struct {
-		name           string
-		utxos          []utxo.UTXO
-		expectedLevel  string
-		expectedAddrs  int
+		name          string
+		utxos         []utxo.UTXO
+		expectedLevel string
+		expectedAddrs int
 	}{
 		{
 			name: "single address - low risk",
@@ -170,8 +171,8 @@ func TestAnalyzePrivacyImpact(t *testing.T) {
 
 func TestBuildDustCleanupPSBTWithMode_Fast(t *testing.T) {
 	utxos := []utxo.UTXO{
-		{TxID: "a" + "0"*63, Vout: 0, Amount: 0.00001000, Address: "addr1"},
-		{TxID: "b" + "0"*63, Vout: 0, Amount: 0.00001000, Address: "addr2"},
+		{TxID: "a" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000, Address: "addr1"},
+		{TxID: "b" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000, Address: "addr2"},
 	}
 
 	destAddr := "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
@@ -198,9 +199,9 @@ func TestBuildDustCleanupPSBTWithMode_Fast(t *testing.T) {
 
 func TestBuildDustCleanupPSBTWithMode_Privacy(t *testing.T) {
 	utxos := []utxo.UTXO{
-		{TxID: "a" + "0"*63, Vout: 0, Amount: 0.00001000, Address: "addr1"},
-		{TxID: "b" + "0"*63, Vout: 0, Amount: 0.00001000, Address: "addr1"},
-		{TxID: "c" + "0"*63, Vout: 0, Amount: 0.00001000, Address: "addr2"},
+		{TxID: "a" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000, Address: "addr1"},
+		{TxID: "b" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000, Address: "addr1"},
+		{TxID: "c" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000, Address: "addr2"},
 	}
 
 	destAddr := "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
@@ -223,7 +224,7 @@ func TestBuildDustCleanupPSBTWithMode_Privacy(t *testing.T) {
 
 func TestBuildDustCleanupPSBTWithMode_InvalidMode(t *testing.T) {
 	utxos := []utxo.UTXO{
-		{TxID: "a" + "0"*63, Vout: 0, Amount: 0.00001000},
+		{TxID: "a" + strings.Repeat("0", 63), Vout: 0, Amount: 0.00001000},
 	}
 
 	_, _, err := BuildDustCleanupPSBTWithMode(utxos, "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4", 1, SpendingMode("invalid"))

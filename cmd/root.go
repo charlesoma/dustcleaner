@@ -16,12 +16,11 @@ var (
 	network   string
 )
 
-// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "dustcleaner",
 	Short: "Analyze and clean Bitcoin wallet dust UTXOs",
-	Long: `dustcleaner is a CLI tool for connecting to Bitcoin Core via RPC,
-analyzing wallet UTXOs, and helping construct PSBTs to consolidate dust outputs.`,
+	Long: `DustCleaner is a CLI tool for scanning Bitcoin Core wallet UTXOs,
+detecting dust outputs, and constructing PSBTs to safely consolidate them.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("dustcleaner CLI. Use --help to see available subcommands.")
 	},

@@ -25,8 +25,13 @@ type BitcoinRPC struct {
 
 // NewFromConfig constructs a BitcoinRPC from a Config object.
 func NewFromConfig(cfg *config.Config) *BitcoinRPC {
+	parsedURL, err := url.Parse(cfg.RPCURL)
+	if err != nil {
+		parsedURL = &url.URL{Scheme: "http", Host: cfg.RPCURL}
+	}
+
 	return &BitcoinRPC{
-		baseURL:  baseURL,
+		baseURL:  parsedURL.String(),
 		wallet:   cfg.Wallet,
 		username: cfg.RPCUser,
 		password: cfg.RPCPass,
@@ -39,28 +44,28 @@ func NewFromConfig(cfg *config.Config) *BitcoinRPC {
 // getURL returns the full RPC URL for the given method.
 func (c *BitcoinRPC) getURL(method string) (string, error) {
 	walletMethods := map[string]bool{
-		"listunspent":        true,
-		"getnewaddress":      true,
-		"sendtoaddress":      true,
-		"getbalance":         true,
-		"listtransactions":   true,
-		"listaddresses":     true,
-		"getaddressinfo":    true,
-		"walletprocesspsbt":  true,
-		"finalizepsbt":       true,
+		"listunspent":            true,
+		"getnewaddress":          true,
+		"sendtoaddress":          true,
+		"getbalance":             true,
+		"listtransactions":       true,
+		"listaddresses":          true,
+		"getaddressinfo":         true,
+		"walletprocesspsbt":      true,
+		"finalizepsbt":           true,
 		"walletcreatefundedpsbt": true,
 	}
-	
+
 	baseURL, err := url.Parse(c.baseURL)
 	if err != nil {
 		return "", fmt.Errorf("parse base URL: %w", err)
 	}
-	
+
 	if walletMethods[method] && c.wallet != "" {
 		path := strings.TrimSuffix(baseURL.Path, "/")
 		baseURL.Path = path + "/wallet/" + c.wallet
 	}
-	
+
 	return baseURL.String(), nil
 }
 
@@ -100,7 +105,7 @@ func (c *BitcoinRPC) do(ctx context.Context, method string, params []interface{}
 	if err != nil {
 		return fmt.Errorf("get RPC URL: %w", err)
 	}
-	
+
 	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, rpcURL, bytes.NewReader(reqBody))
 	if err != nil {
 		return fmt.Errorf("create http request: %w", err)

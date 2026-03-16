@@ -46,6 +46,7 @@ This harms wallet privacy by revealing clusters of addresses that likely belong 
 - [Security Notes](#security-notes)
 - [Privacy Considerations](#privacy-considerations)
 - [Example Use Cases](#example-use-cases)
+- [CLI Overview](#cli-overview)
 - [Commands Overview](#commands-overview)
 - [CLI Help](#cli-help)
 - [Background Reading](#background-reading)
@@ -83,6 +84,12 @@ This harms wallet privacy by revealing clusters of addresses that likely belong 
   - Compatible with Bitcoin Core PSBT commands:
     - `walletprocesspsbt`
     - `finalizepsbt`
+
+### Example CLI Output – PSBT Export
+
+DustCleaner constructing a cleanup PSBT from detected dust UTXOs:
+
+![DustCleaner PSBT export](docs/psbt-demo.png)
 
 - **Signing & broadcast**
   - PSBT signing via Bitcoin Core
@@ -186,6 +193,12 @@ Dust UTXOs detected: 0
 ```
 
 This demonstrates the full lifecycle: **simulate dust → detect → build PSBT → export → sign → broadcast → verify dust removed**.
+
+### Example CLI Output – Dust Detection
+
+DustCleaner scanning wallet UTXOs and detecting dust outputs:
+
+![DustCleaner scan output](docs/scan-demo.png)
 
 ---
 
@@ -395,17 +408,34 @@ DustCleaner will highlight clustering and linkage risks, but it does **not** enf
     - See which UTXOs are risky
     - Understand clustering and linkage implications
     - Decide whether to spend or ignore certain dust
+---
+
+## CLI Overview
+
+DustCleaner exposes several commands for scanning and cleaning dust UTXOs in a typical workflow:
+
+- `scan` → `explain` → `build-psbt` / `export-psbt` → sign → broadcast
+
+The hero command most users start with is:
+
+```bash
+dustcleaner scan
+```
+
+Example help output:
+
+![CLI help](docs/cli-help.png)
 
 ---
 
 ## Commands Overview
 
 ```bash
-dustcleaner scan          # Scan wallet UTXOs and detect dust
-dustcleaner cleanup       # Build cleanup transaction(s) for dust UTXOs
-dustcleaner export-psbt   # Build cleanup transaction(s) and export PSBT(s)
-dustcleaner simulate-dust # Simulate a dust attack on regtest
-dustcleaner explain       # Explain why specific UTXOs were flagged as dust
+dustcleaner scan         # Scan wallet UTXOs and detect dust
+dustcleaner explain      # Explain why specific UTXOs were flagged as dust
+dustcleaner build-psbt   # Build unsigned tx spending detected dust UTXOs
+dustcleaner export-psbt  # Build cleanup transaction(s) and export PSBT(s)
+dustcleaner simulate-dust# Simulate a dust attack on regtest
 ```
 
 Each command supports common flags such as:
@@ -426,17 +456,18 @@ Each command supports common flags such as:
 Example output:
 
 ```text
-DustCleaner - Bitcoin dust detection and cleanup tool
+DustCleaner is a CLI tool for scanning Bitcoin Core wallet UTXOs,
+detecting dust outputs, and constructing PSBTs to safely consolidate them.
 
 Usage:
   dustcleaner [command]
 
 Available Commands:
   scan           Scan wallet UTXOs and detect dust
-  cleanup        Build cleanup transactions for dust UTXOs
-  export-psbt    Export cleanup transaction as PSBT
-  simulate-dust  Simulate dust attack (regtest only)
-  explain        Explain detected dust patterns
+  explain        Explain why UTXOs are flagged as dust
+  build-psbt     Build an unsigned tx that spends detected dust UTXOs
+  export-psbt    Build and export a PSBT spending detected dust UTXOs
+  simulate-dust  Simulate a dust attack on regtest and run detection/cleanup
 ```
 
 ---
